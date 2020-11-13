@@ -5,20 +5,22 @@ if os.path.exists("env.py"):
 
 # Get username from the env.py file
 username = os.getenv('USERNAME')
-password = os.getenv('PASSWORD') #this is not used in this file now, can be deleted, just example
+password = os.getenv('PASSWORD')
+# password not used in this file now, can be deleted, just example
 
 # Connect to database
 connection = pymysql.connect(host="localhost",
-                             user=username, #here we are using the username set on line 7 above
+                             user=username,
                              password='',
                              db="Chinook")
 try:
     # Run a query
     with connection.cursor() as cursor:
-        sql = "SELECT * FROM Artist;"
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        print(result)
+        list_of_names = ["fred", "Fred"]
+        format_strings = ','.join(['%s']*len(list_of_names))
+        cursor.execute("DELETE FROM Friends WHERE name in ({});".format(
+            format_strings), list_of_names)
+        connection.commit()
 finally:
     # Close connection
     connection.close()
